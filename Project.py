@@ -159,7 +159,7 @@ def disstudbioclasssec():
 
 def display():
     print("1.Enter 1 to display students biodata")
-    print("2.Enter 2 to dipllay students marks")
+    print("2.Enter 2 to display students marks")
     ch = int(input("Enter the choice in numbers:"))
     if ch == 1:
         print("1. Enter 1 to display students biodata classwise")
