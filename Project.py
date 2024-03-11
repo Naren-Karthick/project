@@ -4,7 +4,7 @@ from openpyxl import Workbook
 from openpyxl import *
 
 con = mysql.connector.connect(
-    host="localhost", username="root", password="Narenguru2007", database="project"
+    host="localhost", username="your username", password="your password", database="project"
 )
 
 
