@@ -3,9 +3,20 @@ from tabulate import tabulate
 from openpyxl import Workbook
 from openpyxl import *
 
+
 con = mysql.connector.connect(
     host="localhost", username="root", password="Narenguru2007", database="project"
 )
+
+mycur = con.cursor()
+mycur.execute(
+    "create table if not exists student(admn int primary key, sname varchar(50) not null, fname varchar(50) not null, mname varchar(50), sclass int not null, ssec varchar(5) not null)"
+)
+con.commit()
+mycur.execute(
+    "create table if not exists marks(name varchar(50), admn int primary key, sclass int not null, ssec varchar(5), sub1 float(5,2), sub2 float(5,2), sub3 float(5,2), sub4 float(5,2), sub5 float(5,2))"
+)
+con.commit()
 
 
 def newstudent():
@@ -46,7 +57,7 @@ def mark():
     con.commit()
 
 
-def getmarks():
+def getmarksclasssec():
     cur = con.cursor()
     sclass = int(input("Enter the class in number:"))
     sec = input("Enter the section to get excel:").upper()
@@ -57,7 +68,7 @@ def getmarks():
     tup = (head,)
     tup = tup + res
     try:
-        wb = load_workbook(filename="Students.xlsx")
+        wb = load_workbook(filename=f"{sclass} {sec} marks.xlsx")
     except:
         wb = Workbook()
     sheet = wb.active
@@ -70,23 +81,49 @@ def getmarks():
             cell.value = col
             j += 1
 
-    wb.save(filename=f"{sclass} {sec}.xlsx")
+    wb.save(filename=f"{sclass} {sec} marks.xlsx")
     print("File Saved.")
 
 
-def getstud():
-
+def getmarksclass():
     cur = con.cursor()
-    sclass = int(input("Enter the class in numbers:"))
-    sec = input("Enter the section:")
-    sql = f"select * from student where sclass = {sclass} and ssec = '{sec}' "
+    sclass = int(input("Enter the class in number:"))
+    sql = f"select * from marks where sclass = {sclass}"
+    cur.execute(sql)
+    res = tuple(cur.fetchall())
+    head = ("Name", "Admn", "Class", "Sec", "sub1", "sub2", "sub3", "sub4", "sub5")
+    tup = (head,)
+    tup = tup + res
+    try:
+        wb = load_workbook(filename=f"{sclass} marks.xlsx")
+    except:
+        wb = Workbook()
+    sheet = wb.active
+    i = 0
+    for row in tup:
+        i += 1
+        j = 1
+        for col in row:
+            cell = sheet.cell(row=i, column=j)
+            cell.value = col
+            j += 1
+
+    wb.save(filename=f"{sclass} marks.xlsx")
+    print("File Saved.")
+
+
+def getbioclasssec():
+    cur = con.cursor()
+    sclass = int(input("Enter the class in number:"))
+    sec = input("Enter the section to get excel:").upper()
+    sql = f"select * from marks where sclass = {sclass} and ssec = '{sec}' "
     cur.execute(sql)
     res = tuple(cur.fetchall())
     head = ("Admn", "Name", "Father name", "Mother Name", "Class", "Sec")
     tup = (head,)
     tup = tup + res
     try:
-        wb = load_workbook(filename="Students.xlsx")
+        wb = load_workbook(filename=f"{sclass} {sec} marks.xlsx")
     except:
         wb = Workbook()
     sheet = wb.active
@@ -99,18 +136,52 @@ def getstud():
             cell.value = col
             j += 1
 
-    wb.save(filename=f"{sclass} {sec}.xlsx")
+    wb.save(filename=f"{sclass} {sec} marks.xlsx")
+    print("File Saved.")
+
+
+def getbioclass():
+
+    cur = con.cursor()
+    sclass = int(input("Enter the class in numbers:"))
+    sql = f"select * from student where sclass = {sclass}"
+    cur.execute(sql)
+    res = tuple(cur.fetchall())
+    head = ("Admn", "Name", "Father name", "Mother Name", "Class", "Sec")
+    tup = (head,)
+    tup = tup + res
+    try:
+        wb = load_workbook(filename=f"{sclass} biodata.xlsx")
+    except:
+        wb = Workbook()
+    sheet = wb.active
+    i = 0
+    for row in tup:
+        i += 1
+        j = 1
+        for col in row:
+            cell = sheet.cell(row=i, column=j)
+            cell.value = col
+            j += 1
+
+    wb.save(filename=f"{sclass} biodata.xlsx")
     print("File Saved.")
 
 
 def getexcel():
-    print("1.Enter 1 to get excel of students bio data")
-    print("2.Enter 2 to get excel of student mark list")
+    print("1.Enter 1 to get excel of students bio data classwise")
+    print("2.Enter 2 to get excel of students bio data class and sectionwise")
+    print("3.Enter 3 to get excel of student mark list classwise")
+    print("4.Enter 4 to get excel of student mark list class and sectionwise")
     ch = int(input("Enter the choice:"))
     if ch == 1:
-        getstud()
+        getbioclass()
     elif ch == 2:
-        getmarks()
+        getbioclasssec()
+    elif ch == 3:
+        getmarksclass()
+    elif ch == 4:
+        getmarksclasssec()
     else:
         print("Invalid choice")
 
