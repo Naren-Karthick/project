@@ -14,7 +14,7 @@ mycur.execute(
 )
 con.commit()
 mycur.execute(
-    "create table if not exists marks(name varchar(50), admn int primary key, sclass int not null, ssec varchar(5), sub1 float(5,2), sub2 float(5,2), sub3 float(5,2), sub4 float(5,2), sub5 float(5,2))"
+    "create table if not exists marks(name varchar(50), admn int primary key, sclass int not null, ssec varchar(5), sub1 float(5,2), sub2 float(5,2), sub3 float(5,2), sub4 float(5,2), sub5 float(5,2), total float(5,2), average float(5,2)"
 )
 con.commit()
 
@@ -52,7 +52,7 @@ def mark():
         sub5 = int(input("Enter the CS/Biology/Economics mark:"))
     else:
         print("Invaild Class")
-    sql = f"insert into marks values('{name}',{admn},{sclass},'{sec}',{sub1},{sub2},{sub3},{sub4},{sub5})"
+    sql = f"insert into marks values('{name}',{admn},{sclass},'{sec}',{sub1},{sub2},{sub3},{sub4},{sub5},{sub1+sub2+sub3+sub4+sub5},{(sub1+sub2+sub3+sub4+sub5)/5}"
     cur.execute(sql)
     con.commit()
 
@@ -64,7 +64,7 @@ def getmarksclasssec():
     sql = f"select * from marks where sclass = {sclass} and ssec = '{sec}' "
     cur.execute(sql)
     res = tuple(cur.fetchall())
-    head = ("Name", "Admn", "Class", "Sec", "sub1", "sub2", "sub3", "sub4", "sub5")
+    head = ("Name", "Admn", "Class", "Sec", "sub1", "sub2", "sub3", "sub4", "sub5","total","Average")
     tup = (head,)
     tup = tup + res
     try:
@@ -91,7 +91,7 @@ def getmarksclass():
     sql = f"select * from marks where sclass = {sclass}"
     cur.execute(sql)
     res = tuple(cur.fetchall())
-    head = ("Name", "Admn", "Class", "Sec", "sub1", "sub2", "sub3", "sub4", "sub5")
+    head = ("Name", "Admn", "Class", "Sec", "sub1", "sub2", "sub3", "sub4", "sub5","total","average")
     tup = (head,)
     tup = tup + res
     try:
